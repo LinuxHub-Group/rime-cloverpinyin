@@ -141,6 +141,9 @@ python3 ./libscel/scel.py >> sogou_new_words.dict.yaml || exit
 mkdir -p ../data || exit
 cp ../src/*.yaml ../data || exit
 mv clover.*.yaml sogou_new_words.dict.yaml ../data || exit
+cp ../src/*.lua ../data ||exit
+cp -r ../src/lua ../data ||exit
+cp -r ../src/opencc ../data ||exit
 
 cd ../data
 
