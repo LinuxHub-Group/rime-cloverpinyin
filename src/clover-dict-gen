@@ -3,7 +3,7 @@
 
 import jieba
 import pypinyin
-import opencc
+from opencc import OpenCC
 
 import argparse
 import os
@@ -59,7 +59,7 @@ class DictGenerator:
                     }
         """
         jieba.dt.initialize()
-        self.t2s = opencc.OpenCC('t2s.json')
+        self.t2s = OpenCC('t2s')
 
         def symbol2fixPinyin(pinyin):
             pinyin = replace_symbol_to_no_symbol(pinyin)
@@ -244,7 +244,7 @@ def main(args):
             print(self.msg % (count, total))
 
     # 合并 360万 的词库
-    text = open('词典360万（个人整理）.txt', 'r', encoding = 'utf-8').read()
+    text = open('360万中文词库+词性+词频/词典360万（个人整理）.txt', 'r', encoding = 'utf-8').read()
     r = generator.mergeDict(text, 1, args.minfreq, 100000,
         PrintProcess('正在合并360万中文词库 (%s/%s)').process)
     print('成功合并360万中文词库 %s 个汉字， %s 个词组。' % r)
@@ -262,11 +262,11 @@ def main(args):
         PrintProcess('正在合并袖珍简化字拼音的词库 (%s/%s)').process)
     print('成功合并袖珍简化字拼音 %s 个汉字， %s 个词组。' % r)
 
-    # 合并转换符号词汇
-    text = open('symbols.txt', 'r', encoding = 'utf-8').read()
-    r = generator.mergeDict(text, 10000, 0, 100000,
-        PrintProcess('正在合并符号词汇 (%s/%s)').process)
-    print('成功合并符号词汇 %s 个汉字， %s 个词组。' % r)
+    # # 合并转换符号词汇
+    # text = open('symbols.txt', 'r', encoding = 'utf-8').read()
+    # r = generator.mergeDict(text, 10000, 0, 100000,
+    #     PrintProcess('正在合并符号词汇 (%s/%s)').process)
+    # print('成功合并符号词汇 %s 个汉字， %s 个词组。' % r)
 
     word_dict_name = 'clover.base'
     parse_dict_name = 'clover.phrase'

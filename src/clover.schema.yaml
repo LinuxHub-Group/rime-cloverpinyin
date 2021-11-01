@@ -179,11 +179,11 @@ key_binder:
   import_preset: default
   bindings:
     __patch:
-      - key_bindings:/emacs_editing  # emacs 习惯
-      - key_bindings:/move_by_word_with_tab  # tab 在单词间切换
-      - key_bindings:/paging_with_minus_equal  # 减号等号翻页
-      - key_bindings:/paging_with_comma_period   # 逗号句号翻页
-      - key_bindings:/paging_with_brackets   # 中括号翻页
+      - clover.key_bindings:/emacs_editing  # emacs 习惯
+      - clover.key_bindings:/move_by_word_with_tab  # tab 在单词间切换
+      - clover.key_bindings:/paging_with_minus_equal  # 减号等号翻页
+      - clover.key_bindings:/paging_with_comma_period   # 逗号句号翻页
+      - clover.key_bindings:/paging_with_brackets   # 中括号翻页
       - clover.key_bindings:/numbered_mode_switch   # Ctrl+Shift+数字 切换开关
       - clover.key_bindings:/windows_compatible_mode_switch   # Windows 兼容
       - clover.key_bindings:/kp_enter_is_return   # 小键盘回车设为普通回车

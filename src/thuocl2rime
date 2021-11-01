@@ -12,7 +12,7 @@ initials_set = set(pypinyin.style._constants._INITIALS)   # 声母表
 
 def main(args):
     if not os.path.isfile(args.src):
-        sys.stderr.out("文件 %s 不存在。" % args.src)
+        print("文件 %s 不存在。" % args.src)
         return 1
 
     if args.dest is None:

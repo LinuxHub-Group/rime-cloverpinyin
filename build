@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SHELL_FOLDER=$(dirname $(readlink -f "$0"))
+SHELL_FOLDER=$PWD
 
 
 minfreq=100
@@ -98,6 +98,7 @@ cd cache
 
 # 下载并解压文件
 cat "$SHELL_FOLDER/src/file_list.txt" | while read line; do
+	echo "$line"
 	[ "$line" ] || continue
 	url="$(echo "$line" | cut -f1)"
 	[ "$url" ] || continue
@@ -111,55 +112,41 @@ cat "$SHELL_FOLDER/src/file_list.txt" | while read line; do
 	fi
 
 	echo "url = $url"
-	echo "md5 = $md5"
 	echo "name = $name"
 	echo "dst = $dst"
 	echo "commit = $commit"
-	echo "$md5  $name" | md5sum -c || exit
 
 	if [ $dst ]; then
 		rm -rf "$dst-$commit" "$dst"
 		echo $name
 		extract "$name" || exit
-		mv "$dst-$commit" "$dst" || exit
+		mv "$dst-master" "$dst" || exit
 	fi
 done
-extract 360万中文词库+词性+词频.zip || exit
+echo $PWD
+ditto -V -x -k --sequesterRsrc --rsrc 360万中文词库+词性+词频.zip  360万中文词库+词性+词频 || exit
 ln -sf rime-essay/essay.txt essay.txt || exit
 ln -sf rime-pinyin-simp/pinyin_simp.dict.yaml pinyin_simp.dict.yaml || exit
 
-# 生成符号列表
-cd rime-symbols || exit
-mkdir -p opencc || exit
-cd opencc || exit
-../rime-symbols-gen || exit
-cd ../.. || exit
-
-# 生成符号词汇
-cat */opencc/*.txt | opencc -c t2s.json | uniq > symbols.txt
-
 # 开始生成词典
-../src/clover-dict-gen --minfreq=$minfreq || exit
-for i in THUOCL/data/THUOCL_*; do
-	echo "转换 $i"
-	../src/thuocl2rime $i || exit
-done
+python3 ../src/clover-dict-gen --minfreq=$minfreq || exit
+# for i in THUOCL/data/THUOCL_*; do
+# 	echo "转换 $i"
+# 	../src/thuocl2rime $i || exit
+# done
 cp ../src/sogou_new_words.dict.yaml .
-./libscel/scel.py >> sogou_new_words.dict.yaml || exit
+python3 ./libscel/scel.py >> sogou_new_words.dict.yaml || exit
 
 # 生成 data 目录
 mkdir -p ../data || exit
 cp ../src/*.yaml ../data || exit
-mv clover.*.yaml THUOCL_*.yaml sogou_new_words.dict.yaml ../data || exit
+mv clover.*.yaml sogou_new_words.dict.yaml ../data || exit
 
 cd ../data
 
-# 生成 opencc 目录
-mkdir -p opencc
-cp ../cache/rime-emoji/opencc/* opencc
-cp ../cache/rime-symbols/opencc/* opencc
-
 echo 开始构建部署二进制
-rime_deployer --compile clover.schema.yaml . /usr/share/rime-data || exit
+# rime_deployer --compile clover.schema.yaml . /usr/share/rime-data || exit
+#macos
+DYLD_LIBRARY_PATH="/Library/Input Methods/Squirrel.app/Contents/Frameworks" "/Library/Input Methods/Squirrel.app/Contents/MacOS/rime_deployer" $@ --compile clover.schema.yaml . /Users/$USER/Library/Rime || exit
 rm -rf build/*.txt
 
