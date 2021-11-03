@@ -4,13 +4,15 @@
 import jieba
 import pypinyin
 from opencc import OpenCC
+import dict
 
 import argparse
 import os
 import sys
 
 # 从 pypinyin 库里得到所有文字及其若干个拼音
-pinyin_dict = pypinyin.pinyin_dict.pinyin_dict
+pinyin_dict = dict.pinyin_dict
+dict.load()
 replace_symbol_to_no_symbol = pypinyin.style._utils.replace_symbol_to_no_symbol
 initials_set = set(pypinyin.style._constants._INITIALS)   # 声母表
 initials_set.add('ng')
